@@ -1,10 +1,20 @@
 import torch
+import time
+
+channels = 30
+height = 1000
+width = 1000
+# your features with shape [N, num_channels]
+input_tensor = torch.zeros(channels, height, width)
+
+input_tensor[:, 0:32, :] = 10
+
 # With square kernels and equal stride
-m = torch.nn.Conv2d(16, 33, 3, stride=2)
-# non-square kernels and unequal stride and with padding
-m = torch.nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2))
-# non-square kernels and unequal stride and with padding and dilation
-m = torch.nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1))
-input = torch.randn(20, 16, 50, 100)
-output = m(input)
+input = torch.randn(256, 256)
+m = torch.nn.Conv2d(30, 30, 3, stride=1)
+start_time = time.time()
+output = m(input_tensor)
 print(output)
+print("--- %s s ---" % (time.time() - start_time))
+
+print(output.shape)
