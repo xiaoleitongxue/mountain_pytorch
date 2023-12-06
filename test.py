@@ -11,11 +11,3 @@ x = spconv.SparseConvTensor(features, indices, spatial_shape, batch_size)
 x_dense_NCHW = x.dense()  # convert sparse tensor to dense NCHW tensor.
 print(x_dense_NCHW)
 print(x_dense_NCHW.shape)
-
-
-conv_func = spconv.SparseConv2d(in_channels=1, out_channels=1, kernel_size=3);
-y = conv_func(x)
-print(y)
-y_dense_NCHW = y.dense()  # convert sparse tensor to dense NCHW tensor.
-print(y_dense_NCHW)
-print(y_dense_NCHW.shape)
