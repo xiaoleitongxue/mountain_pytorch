@@ -15,21 +15,40 @@
 
 from concurrent import futures
 import logging
+from os import read
 
 import grpc
-import helloworld_pb2
-import helloworld_pb2_grpc
+from torch import tensor
+import torch
+import grpcInterface as gi
+
 import sys
 
-class Greeter(helloworld_pb2_grpc.GreeterServicer):
-    def SayHello(self, request, context):
-        return helloworld_pb2.HelloReply(message="Hello, %s!" % request.name)
+from model import Test_model
+import utils
 
+
+
+class Greeter(gi.helloworld_pb2_grpc.GreeterServicer):
+    def SayHello(self, request, context):
+        return gi.helloworld_pb2.HelloReply(message="Hello, %s!" % request.name)
+
+class Inference(gi.objectdetection_pb2_grpc.InferenceServicer):
+    def __init__(self) -> None:
+        super().__init__()
+        self.model = Test_model.Model();
+    
+    def inference(self, request, context):
+        # convert request.tensor to filestream
+        tensored_bytes = utils.bytes2tensor(request.data)
+        box = self.model.inference(tensored_bytes)
+        reply = gi.objectdetection_pb2.InferenceReply(name='Completed inference', data=utils.tensor2bytes(box))
+        return reply
 
 def serve(p):
     port = p
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
+    gi.helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port("[::]:" + port)
     server.start()
     print("Server started, listening on " + port)

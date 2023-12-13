@@ -18,18 +18,22 @@ from __future__ import print_function
 import logging
 
 import grpc
-import helloworld_pb2
-import helloworld_pb2_grpc
-
-
+from grpcInterface import helloworld_pb2
+from grpcInterface import helloworld_pb2_grpc
+import torch
+import io
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
     print("Will try to greet world ...")
+    tensor = torch.ones(2,2)
+    stream = io.BytesIO()
+    torch.save(tensor, stream)
+    stream_data = stream.getvalue()
     with grpc.insecure_channel("localhost:50051") as channel:
         stub = helloworld_pb2_grpc.GreeterStub(channel)
-        response = stub.SayHello(helloworld_pb2.HelloRequest(name="you"))
+        response = stub.SayHello(helloworld_pb2.HelloRequest(name="you", file=stream_data))
     print("Greeter client received: " + response.message)
 
 
