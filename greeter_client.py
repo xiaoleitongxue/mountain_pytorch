@@ -18,8 +18,8 @@ from __future__ import print_function
 import logging
 
 import grpc
-from grpcInterface import helloworld_pb2
-from grpcInterface import helloworld_pb2_grpc
+import helloworld_pb2
+import helloworld_pb2_grpc
 import torch
 import io
 def run():
@@ -27,13 +27,9 @@ def run():
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
     print("Will try to greet world ...")
-    tensor = torch.ones(2,2)
-    stream = io.BytesIO()
-    torch.save(tensor, stream)
-    stream_data = stream.getvalue()
     with grpc.insecure_channel("localhost:50051") as channel:
         stub = helloworld_pb2_grpc.GreeterStub(channel)
-        response = stub.SayHello(helloworld_pb2.HelloRequest(name="you", file=stream_data))
+        response = stub.SayHello(helloworld_pb2.HelloRequest(name="you", data=bytes(3)))
     print("Greeter client received: " + response.message)
 
 

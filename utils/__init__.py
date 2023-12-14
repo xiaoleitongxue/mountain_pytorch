@@ -37,7 +37,7 @@ from torchvision.transforms.functional import to_pil_image
 from torchvision.io.image import write_png
 
 
-def slice_input(image_path) -> []:
+def slice_input(image_path) -> list[torch.Tensor]:
     # 读取图像
     image = read_image(image_path)
     image_top_left = torch.zeros_like(image)
@@ -94,3 +94,6 @@ def tensor2bytes(tensor : torch.Tensor) -> bytes:
 def bytes2tensor(b : bytes) -> torch.Tensor:
     stream = io.BytesIO(b)
     return torch.load(stream)
+
+def test():
+    print('hello world')

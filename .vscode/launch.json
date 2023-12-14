@@ -1,0 +1,52 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "work_1",
+            "type": "python",
+            "request": "launch",
+            "program": "./worker_server.py",
+            "args": ["50051"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "work_2",
+            "type": "python",
+            "request": "launch",
+            "program": "./worker_server.py",
+            "args": ["50052"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "work_3",
+            "type": "python",
+            "request": "launch",
+            "program": "./worker_server.py",
+            "args": ["50053"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "work_4",
+            "type": "python",
+            "request": "launch",
+            "program": "./worker_server.py",
+            "args": ["50054"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "coordinator",
+            "type": "python",
+            "request": "launch",
+            "program": "./coordinator_client.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

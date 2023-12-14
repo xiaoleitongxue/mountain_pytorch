@@ -1,1 +1,1 @@
-python -m grpc_tools.protoc -I./protos --python_out=./grpcInterface --pyi_out=./grpcInterface --grpc_python_out=./grpcInterface ./protos/*
+python -m grpc_tools.protoc -I./protos --python_out=./ --pyi_out=./ --grpc_python_out=./ ./protos/*
