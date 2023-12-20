@@ -28,7 +28,7 @@ import objectdetection_pb2
 import objectdetection_pb2_grpc
 
 import sys
-
+import pickle
 from model import Test_model
 import utils
 
@@ -46,8 +46,9 @@ class Inference(objectdetection_pb2_grpc.InferenceServicer):
     def inference(self, request, context):
         # convert request.tensor to filestream
         tensored_bytes = utils.bytes2tensor(request.data)
-        box = self.model.inference(tensored_bytes)
-        reply = objectdetection_pb2.InferenceReply(name='Completed inference', data=utils.tensor2bytes(box))
+        result = self.model.inference(tensored_bytes)
+        serialized_result = pickle.dumps(result)
+        reply = objectdetection_pb2.InferenceReply(name='Completed inference', data=serialized_result)
         return reply
 
 def serve(p):

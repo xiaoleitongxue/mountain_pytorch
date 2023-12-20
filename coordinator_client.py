@@ -1,3 +1,4 @@
+import pickle
 from urllib import request
 import grpc
 import asyncio
@@ -6,11 +7,11 @@ import objectdetection_pb2  # 导入你的 gRPC 自动生成的协议文件
 import objectdetection_pb2_grpc
 import helloworld_pb2_grpc  # 导入你的 gRPC 自动生成的服务文件
 import torch
-
+from torchvision.transforms.functional import to_pil_image
 import utils
 
 
-async def make_request(server_address, name: str, data: bytes) -> torch.Tensor:
+async def make_request(server_address, name: str, data: bytes):
     # 创建 gRPC 通道
     options = [('grpc.max_send_message_length', 4309960),
                ('grpc.max_receive_message_length', 4309960)]
@@ -30,7 +31,7 @@ async def make_request(server_address, name: str, data: bytes) -> torch.Tensor:
     # 关闭通道
     await channel.close()
 
-    return utils.bytes2tensor(response.data)
+    return pickle.loads(response.data)
 
 
 async def main():
@@ -41,18 +42,17 @@ async def main():
     image_list = utils.slice_input('./images/dog.jpg')
     bytesed_image_list = list(map(utils.tensor2bytes, image_list))
     # bytesed_image_list = [bytes(3), bytes(3), bytes(3), bytes(3)]
-    request_names = ["Hello gRPC from 50051!",
-                     "Hello gRPC from 50052!", "Hello gRPC from 50053!", "Hello gRPC from 50054!"]
+    request_names = ["image1",
+                     "image2", "image3", "image4"]
 
     # 创建任务列表
     tasks = [make_request(address, name, data) for address,
              name, data in zip(server_addresses, request_names, bytesed_image_list)]
 
     # # 使用 asyncio.gather 同时运行多个任务
-    await asyncio.gather(*tasks)
+    results = await asyncio.gather(*tasks)
+    print(results)
 
-    for result in tasks:
-        print(result)
 
 if __name__ == "__main__":
     # 运行主程序
